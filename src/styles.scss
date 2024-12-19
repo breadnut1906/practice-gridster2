@@ -1,4 +1,16 @@
 /* You can add global styles to this file, and also import other style files */
+@import 'dhtmlx-gantt/codebase/dhtmlxgantt.css';
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+
+.weekend{
+    background: var(--dhx-gantt-base-colors-background-alt);
+}
+
+/* Make the date smaller in the scale */
+.gantt_scale_cell, .gantt_grid_head_cell {
+    font-size: 12px; /* Adjust to the desired size */
+    color: #555; /* Optional: Change color to a lighter shade */
+}

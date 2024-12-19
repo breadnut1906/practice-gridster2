@@ -1,0 +1,35 @@
+.controls {
+    margin-bottom: 20px;
+}
+
+.controls button,
+.controls input,
+.controls textarea {
+    margin-right: 10px;
+}
+
+.widget {
+    padding: 10px;
+    border: 1px solid #ddd;
+    background: #f4f4f4;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+.widget img, video {
+    max-width: 100%;
+    height: auto;
+    object-fit: contain;
+}
+
+.widget p {
+    font-size: 14px;
+    color: #333;
+}
+
+#editorjs {
+    min-height: 400px;
+}

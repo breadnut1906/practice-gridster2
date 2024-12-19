@@ -1,0 +1,14 @@
+
+.gantt-chart{
+    position: relative;
+    width: auto;
+    height: 500px;
+}
+
+.square {
+    display: inline-block;
+    margin-right: 10px;
+    border-radius: 4px; /* Optional: Adds rounded corners to the color box */
+    height: 20px;
+    width: 50px;
+}
