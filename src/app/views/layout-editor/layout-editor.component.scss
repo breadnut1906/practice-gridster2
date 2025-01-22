@@ -1,0 +1,74 @@
+
+// // src/app/app.component.css
+// .grid-container {
+//     position: relative;
+//     width: 100%;
+//     height: 80vh;
+//     background: #f0f0f0;
+//     margin: 16px;
+//     border: 1px solid #ddd;
+//   }
+  
+//   .grid-item {
+//     position: absolute;
+//     background: white;
+//     border: 1px solid #ccc;
+//     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+//     display: flex;
+//     align-items: center;
+//     justify-content: center;
+//     cursor: move;
+//   }
+  
+//   .spacer {
+//     flex: 1 1 auto;
+//   }
+  
+//   .preview-mode .grid-item {
+//     pointer-events: none;
+//     box-shadow: none;
+//   }  
+
+.asset-list {
+    display: flex;
+    margin: 16px 0;
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    padding: 8px;
+  }
+  
+  .asset {
+    margin: 8px;
+    cursor: grab;
+  }
+  
+  .layout-area {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 16px;
+    background: #e9e9e9;
+    padding: 16px;
+    border: 1px dashed #ccc;
+  }
+  
+  .layout-container {
+    position: relative;
+    width: 300px;
+    height: 300px;
+    background: white;
+    margin: 8px;
+    border: 1px solid #ddd;
+    padding: 8px;
+  }
+  
+  .grid-item {
+    position: relative;
+    margin: 4px;
+    border: 1px solid #ccc;
+    padding: 4px;
+    background: #fff;
+  }
+  
+  .spacer {
+    flex: 1 1 auto;
+  }

@@ -1,0 +1,5 @@
+<div class="grid-container" #gridContainer cdkDropList (cdkDropListDropped)="drop($event)">
+  <div *ngFor="let item of items" class="grid-item" cdkDrag>
+    <img [src]="item.src" alt="item.name" />
+  </div>
+</div>

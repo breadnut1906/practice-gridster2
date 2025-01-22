@@ -1,0 +1,33 @@
+<div class="toolbar">
+    <button mat-raised-button (click)="openImageUpload()">Upload Image/Video</button>
+    <button mat-raised-button (click)="addLayer()">Add Layer</button>
+    <button mat-raised-button (click)="exportCanvas()">Export</button>
+  </div>
+  
+
+  <div class="row g-3 p-0 m-0" cdkDropListGroup>
+    <div class="col-4 h-100">
+        <div class="p-3 overflow-y-scroll" style="max-height: 500px;" cdkDropList [cdkDropListData]="imageArray">
+            @for (item of imageArray; track $index) {
+                <div class="p-2" cdkDrag [cdkDragData]="item">
+                    <img [src]="item" class="media" />
+                    <div *cdkDragPlaceholder></div>
+                </div>
+            }
+        </div>
+    </div>
+    <div class="col-8">
+        <div id="exportDiv" class="canvas p-5" interact cdkDropList [cdkDropListData]="layers" cdkDragPreviewContainer="parent">
+            <div *ngFor="let layer of layers" #layer class="layer" [ngStyle]="{ 'left.px': layer.position.x, 'top.px': layer.position.y }">
+              <img *ngIf="layer.type === 'image'" [src]="layer.url" class="media" />
+              <video *ngIf="layer.type === 'video'" [src]="layer.url" class="media" [controls]="false" [autoplay]="true" [loop]="true"></video>
+                <div class="position-absolute top-0 end-0 m-3">
+                    <button (click)="removeLayer(layer)">Remove</button>
+                </div>
+                <div #rotatable class="rotation-btn">
+                    <mat-icon>autorenew</mat-icon>
+                </div>
+            </div>
+          </div>
+    </div>
+  </div>

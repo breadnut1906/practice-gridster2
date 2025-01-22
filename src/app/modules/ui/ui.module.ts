@@ -10,6 +10,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSelectModule } from '@angular/material/select';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { DragDropModule, CdkDropList, CdkDropListGroup, CdkDrag, CdkDragPlaceholder  } from '@angular/cdk/drag-drop';
 
 @NgModule({
   declarations: [],
@@ -17,16 +19,10 @@ import { MatSelectModule } from '@angular/material/select';
     CommonModule,
     GridsterComponent,
     GridsterItemComponent,
-    FormsModule,
-    ReactiveFormsModule,
-    MatButtonModule,
-    MatDialogModule,
-    MatDatepickerModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatIconModule,
-    MatCheckboxModule,
-    MatSelectModule,
+    CdkDrag,
+    CdkDragPlaceholder,
+    CdkDropList, 
+    CdkDropListGroup,
   ],
   exports: [
     CommonModule,
@@ -42,6 +38,8 @@ import { MatSelectModule } from '@angular/material/select';
     MatIconModule,
     MatCheckboxModule,
     MatSelectModule,
+    MatToolbarModule,
+    DragDropModule,
   ]
 })
 export class UiModule { }

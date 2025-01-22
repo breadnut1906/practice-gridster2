@@ -32,6 +32,16 @@ export class GanttChartComponent implements AfterViewInit {
     color: new FormControl('')
   })
 
+  childTaskForm: FormGroup = new FormGroup({
+    id: new FormControl(0),
+    text: new FormControl('', [ Validators.required ]),
+    description: new FormControl('', [ Validators.required ]),
+    start_date: new FormControl(moment().format('YYYY-MM-DD')),
+    duration: new FormControl(1),
+    readonly: new FormControl(true),
+    color: new FormControl('')
+  })
+
   weekScaleTemplate = (date: any) => {
 		var dateToStr = gantt.date.date_to_str("%d %M");
 		var endDate = gantt.date.add(date, 7 - date.getDay(), "day");
@@ -45,10 +55,13 @@ export class GanttChartComponent implements AfterViewInit {
 		return "";
 	};
 
-
   constructor(private dialog: MatDialog, public utility: UtilityService) { }
 
-  ngAfterViewInit(): void {
+  ngAfterViewInit(): void { 
+    this.onInitializeGanttChart();
+  }
+
+  onInitializeGanttChart() {
     // Set the start and end dates to limit the Gantt chart to a specific range
     const startDate = moment().startOf('month').toDate();  // January 1st, 2024
     const endDate = moment().toDate();  // January 30th, 2024
@@ -74,7 +87,7 @@ export class GanttChartComponent implements AfterViewInit {
     });
 
     // Configure timeline scales
-	  gantt.config.min_column_width = 50;;
+	  gantt.config.min_column_width = 50;
     gantt.config.scale_height = 90;
       
     gantt.config.scales = [
@@ -85,9 +98,10 @@ export class GanttChartComponent implements AfterViewInit {
 
     // Width of the grid on the left
     gantt.config.columns = [
-      { name: "text", label: "Employees", width: "*", tree: false }, // Task name
+      { name: "text", label: "Employees", width: "*", tree: true }, // Task name
       { name: "start_date", label: "Start Date", align: "center", width: 100 }, // Start date
     ];
+    
     // gantt.setSkin("skyblue");
 
     // gantt.plugins({
@@ -97,14 +111,15 @@ export class GanttChartComponent implements AfterViewInit {
     //   var tooltips = gantt.ext.tooltips;
     //   tooltips.tooltip.setViewport(gantt.$task_data);
     // });
+    
 
     gantt.init(this.ganttContainer.nativeElement);
     gantt.parse({
       data: [
-        // { id: 1, text: 'Task 1', description: "This is the first task.", start_date: moment("2024-12-01").toDate(), duration: 1, color: "#FF6347", readonly: false },
-        // { id: 2, text: 'Task 2', description: "This is the second task.", start_date: moment("2024-12-02").toDate(), duration: 3, color: "#4682B4", readonly: false }
+        { id: 1, text: 'Task 1', description: "This is the first task.", start_date: moment("2025-01-01").toDate(), duration: 5, color: "#FF6347", readonly: false, open: true },
+        { id: 2, text: 'Task 1.1', description: "This is the second task.", start_date: moment("2025-01-01").toDate(), duration: 3, color: "#4682B4", readonly: false, parent: 1 }
       ],
-    });  
+    }); 
   }
 
   onClickAddNew(element: any) {

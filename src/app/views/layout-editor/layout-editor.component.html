@@ -1,0 +1,62 @@
+<!-- <mat-toolbar color="primary">
+    <span>Digital Signage Editor</span>
+    <span class="spacer"></span>
+    <button mat-button (click)="togglePreview()">
+      {{ isPreviewMode ? 'Edit Mode' : 'Preview Mode' }}
+    </button>
+    <button mat-button (click)="exportLayout()">Export Layout</button>
+    <button mat-button (click)="exportToImage()">Export to Image</button>
+  </mat-toolbar>
+  
+  <div class="grid-container" [class.preview-mode]="isPreviewMode">
+    <div
+      *ngFor="let item of items"
+      class="grid-item"
+      [ngStyle]="{
+        width: item.width + 'px',
+        height: item.height + 'px',
+        transform: 'translate(' + item.x + 'px, ' + item.y + 'px)'
+      }"
+      [attr.data-x]="item.x"
+      [attr.data-y]="item.y"
+    >
+      {{ item.text }}
+    </div>
+
+  </div> -->
+
+  <mat-toolbar color="primary">
+    <span>Digital Signage Editor</span>
+    <span class="spacer"></span>
+    <button mat-button (click)="addNewContainer()">Add New Container</button>
+    <button mat-button (click)="togglePreview()">
+      {{ isPreviewMode ? 'Edit Mode' : 'Preview Mode' }}
+    </button>
+  </mat-toolbar>
+  
+  <div class="asset-list" cdkDropList [cdkDropListData]="assetList" (cdkDropListDropped)="drop($event)">
+    <div class="asset" *ngFor="let asset of assetList" cdkDrag>
+      <ng-container [ngSwitch]="asset.type">
+        <img *ngSwitchCase="'image'" [src]="asset.src" alt="Image Asset" />
+        <video *ngSwitchCase="'video'" controls [src]="asset.src"></video>
+      </ng-container>
+    </div>
+  </div>
+  
+  <div class="layout-area">
+    <div
+      class="layout-container"
+      *ngFor="let container of layoutContainers"
+      cdkDropList
+      [cdkDropListData]="container.items"
+      (cdkDropListDropped)="drop($event)"
+    >
+      <div class="grid-item" *ngFor="let item of container.items" cdkDrag>
+        <ng-container [ngSwitch]="item.type">
+          <img *ngSwitchCase="'image'" [src]="item.src" alt="Image in Layout" />
+          <video *ngSwitchCase="'video'" controls [src]="item.src"></video>
+          <div *ngSwitchDefault>{{ item.text }}</div>
+        </ng-container>
+      </div>
+    </div>
+  </div>
