@@ -34,9 +34,19 @@
 
   .rotation-btn {
     position: absolute;
-    bottom: -100px;
+    bottom: -10px;
     left: 50%;
     font-size: 18px;
     cursor: pointer;
     z-index: 2;
   }
+
+  :host {
+    -webkit-user-drag: none;
+    -khtml-user-drag: none;
+    -moz-user-drag: none;
+    -o-user-drag: none;
+    -webkit-user-select: none; /* Safari */
+    -ms-user-select: none; /* IE 10 and IE 11 */
+    user-select: none; /* Standard syntax */
+}

@@ -12,9 +12,11 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSelectModule } from '@angular/material/select';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { DragDropModule, CdkDropList, CdkDropListGroup, CdkDrag, CdkDragPlaceholder  } from '@angular/cdk/drag-drop';
+import { NgxMoveableComponent } from 'ngx-moveable';
+import { NgxSelectoComponent } from 'ngx-selecto';
 
 @NgModule({
-  declarations: [],
+  declarations: [ ],
   imports: [
     CommonModule,
     GridsterComponent,
@@ -23,6 +25,7 @@ import { DragDropModule, CdkDropList, CdkDropListGroup, CdkDrag, CdkDragPlacehol
     CdkDragPlaceholder,
     CdkDropList, 
     CdkDropListGroup,
+    NgxMoveableComponent,
   ],
   exports: [
     CommonModule,
@@ -40,6 +43,9 @@ import { DragDropModule, CdkDropList, CdkDropListGroup, CdkDrag, CdkDragPlacehol
     MatSelectModule,
     MatToolbarModule,
     DragDropModule,
+    NgxMoveableComponent,
+    
   ]
 })
+
 export class UiModule { }

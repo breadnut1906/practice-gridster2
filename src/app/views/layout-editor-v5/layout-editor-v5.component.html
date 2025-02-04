@@ -1,0 +1,23 @@
+<div class="toolbar">
+    <label for="resolution">Resolution:</label>
+    <select id="resolution" (change)="changeResolution($event)">
+      <option *ngFor="let res of resolutions" [value]="res.width + ',' + res.height">
+        {{ res.label }}
+      </option>
+    </select>
+    <button (click)="zoomIn()">+</button>
+    <button (click)="zoomOut()">-</button>
+    <button (click)="zoomMin()">Min</button>
+    <button (click)="zoomMax()">Max</button>
+  </div>
+
+  <div class="workspace" #workspace>
+    <div class="canvas-wrapper"
+         [style.width.px]="currentWidth * zoomScale"
+         [style.height.px]="currentHeight * zoomScale">
+      <div class="canvas" #canvas
+           [style.width.px]="currentWidth"
+           [style.height.px]="currentHeight"
+           [style.transform]="'scale(' + zoomScale + ')'"></div>
+    </div>
+  </div>

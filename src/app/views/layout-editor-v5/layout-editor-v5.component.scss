@@ -1,0 +1,27 @@
+.toolbar {
+    text-align: center;
+    margin-bottom: 10px;
+  }
+  .workspace {
+    width: 100vw;
+    height: 80vh;
+    overflow: auto;
+    background: #333;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+  .canvas-wrapper {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .canvas {
+    border: 2px solid black;
+    background: lightgray;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }

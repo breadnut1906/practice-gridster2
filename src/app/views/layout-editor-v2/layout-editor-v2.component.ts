@@ -1,10 +1,7 @@
 import { Component, ElementRef, Renderer2, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import interact from 'interactjs';
-import html2canvas from 'html2canvas';
 import { UiModule } from '../../modules/ui/ui.module';
-
-import * as htmlToImage from 'html-to-image';
 
 @Component({
   selector: 'app-layout-editor-v2',
@@ -29,13 +26,15 @@ export class LayoutEditorV2Component {
     "https://placehold.co/300x200/000000/ffffff.png?text=Image+5",
     "https://placehold.co/300x200/000000/ffffff.png?text=Image+6"
   ];
+
+  transform = { x: 0, y: 0, a: 0 };
   
 
   constructor(private dialog: MatDialog, private elementRef: ElementRef, private renderer: Renderer2) {}
 
   ngOnInit() {
     this.initializeInteract();
-    this.initializedRotation();
+    // this.initializedRotation();
   }
 
   ngAfterViewInit(): void { }
@@ -43,17 +42,15 @@ export class LayoutEditorV2Component {
   initializeInteract() {
     interact('.layer')
       .draggable({
-        onmove: this.moveElement.bind(this),
+        inertia: true,
+        listeners: {
+          move: this.moveElement.bind(this),
+        },
         modifiers: [
           interact.modifiers.restrictRect({
             restriction: '.canvas',
-            endOnly: false,
-            offset: { 
-              top: 20, // 20px from the top of the parent
-              left: 20, // 20px from the left of the parent
-              bottom: 20, // 20px from the bottom of the parent (negative because it's from the end)
-              right: 20, // 20px from the right of the parent (negative because it's from the end)
-             }
+            endOnly: true,
+            offset: { top: 20, left: 20, bottom: 20, right: 20 }
           })
         ]
       })
@@ -67,72 +64,183 @@ export class LayoutEditorV2Component {
           interact.modifiers.restrict({
             restriction: '.canvas',
             endOnly: false,
-            offset: { 
-              top: 20, // 20px from the top of the parent
-              left: 20, // 20px from the left of the parent
-              bottom: 20, // 20px from the bottom of the parent (negative because it's from the end)
-              right: 20, // 20px from the right of the parent (negative because it's from the end)
-             }
+            // offset: { 
+            //   top: 20, // 20px from the top of the parent
+            //   left: 20, // 20px from the left of the parent
+            //   bottom: 20, // 20px from the bottom of the parent (negative because it's from the end)
+            //   right: 20, // 20px from the right of the parent (negative because it's from the end)
+            //  }
           })
-          // interact.modifiers.restrictRect({
-          //   restriction: '.canvas',
-          //   endOnly: true,
-          // })
         ],
         listeners: {
-          move(event) {
-            let target = event.target;
-            let x = (parseFloat(target.getAttribute('data-x')) || 0) + event.deltaRect.left;
-            let y = (parseFloat(target.getAttribute('data-y')) || 0) + event.deltaRect.top;
+          move: this.onResizeElement.bind(this),
+          // move(event) {
+          //   let target = event.target;
+          //   let x = (parseFloat(target.getAttribute('data-x')) || 0) + event.deltaRect.left;
+          //   let y = (parseFloat(target.getAttribute('data-y')) || 0) + event.deltaRect.top;
 
-            Object.assign(target.style, {
-              width: `${event.rect.width}px`,
-              height: `${event.rect.height}px`,
-              transform: `translate(${x}px, ${y}px)`,
-            });
+          //   Object.assign(target.style, {
+          //     width: `${event.rect.width}px`,
+          //     height: `${event.rect.height}px`,
+          //     transform: `translate(${x}px, ${y}px)`,
+          //   });
 
-            target.setAttribute('data-x', x);
-            target.setAttribute('data-y', y);
-          }
+          //   target.setAttribute('data-x', x);
+          //   target.setAttribute('data-y', y);
+          // }
         },
       })
+
+
+      interact('.rotation-btn').draggable({
+        inertia: true,
+        listeners: {
+          start(event) {
+            const layer = event.target.closest('.layer');
+            if (layer) {
+              const rect = layer.getBoundingClientRect();
+              event.target['cx'] = rect.left + rect.width / 2;
+              event.target['cy'] = rect.top + rect.height / 2;
+            }
+            // const box: any = document.querySelectorAll('.layer');
+            // const parentId = event.target.parentElement.id;
+            
+            // const rect = box[parentId].getBoundingClientRect();          
+            // event.target['cx'] = rect.left + rect.width / 2;
+            // event.target['cy'] = rect.top + rect.height / 2;
+          },
+          move: this.onRotateElement.bind(this),
+        }
+      });
   }
 
   initializedRotation() {
-    let angle = 0; // Initial rotation angle
-    let transform = { x: 0, y: 0 };
     interact('.rotation-btn').draggable({
+      inertia: true,
       listeners: {
         start(event) {
-          const box: any = document.querySelector('.layer');
-          const rect = box.getBoundingClientRect();
-          event.target['cx'] = rect.left + rect.width / 2;
-          event.target['cy'] = rect.top + rect.height / 2;
+          const layer = event.target.closest('.layer');
+          if (layer) {
+            const rect = layer.getBoundingClientRect();
+            event.target['cx'] = rect.left + rect.width / 2;
+            event.target['cy'] = rect.top + rect.height / 2;
+          }
+          // const box: any = document.querySelectorAll('.layer');
+          // const parentId = event.target.parentElement.id;
+          
+          // const rect = box[parentId].getBoundingClientRect();          
+          // event.target['cx'] = rect.left + rect.width / 2;
+          // event.target['cy'] = rect.top + rect.height / 2;
         },
-        move(event) {
-          const box: any = document.querySelector('.layer');
-          const cx = event.target['cx'];
-          const cy = event.target['cy'];
-          const dx = event.clientX - cx;
-          const dy = event.clientY - cy;
-          angle = (Math.atan2(dy, dx) * 180) / Math.PI;
-          box.style.transform = `translate(${transform.x}px, ${transform.y}px) rotate(${angle}deg)`;
-        },
+        move: this.onRotateElement.bind(this),
       }
     });
   }
 
   moveElement(event: any) {
+
     const target = event.target;
+    const transform = this.getCurrentTransform(target);
+
     const x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx;
     const y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
 
-    Object.assign(target.style, {
-      transform: `translate(${x}px, ${y}px)`,
-    });
+    this.transform.x = x;
+    this.transform.y = y;
+
+    target.style.transform = `translate(${x}px, ${y}px) rotate(${transform.a}deg)`;
+    target.setAttribute('data-x', x.toString());
+    target.setAttribute('data-y', y.toString());
+    // const box: any = document.querySelectorAll('.layer');
+    // const target = event.target;
     
-    target.setAttribute('data-x', x);
-    target.setAttribute('data-y', y);
+    // const transformString = box[target.id].style.transform;
+    // const rotationMatch = transformString.match(/rotate\((-?\d+\.?\d*)deg\)/);    
+
+    // const x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx;
+    // const y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;    
+
+    // this.transform.x = x;
+    // this.transform.y = y;
+
+    // Object.assign(target.style, {
+    //   transform: `translate(${x}px, ${y}px) rotate(${parseFloat(rotationMatch[1])}deg)`,
+    // });
+    
+    // target.setAttribute('data-x', x);
+    // target.setAttribute('data-y', y);    
+  }
+
+  onRotateElement(event: any) {
+    // const box: any = document.querySelectorAll('.layer');
+    // const parentId = event.target.parentElement.id;
+    // const cx = event.target['cx'];
+    // const cy = event.target['cy'];
+    // const dx = event.clientX - cx;
+    // const dy = event.clientY - cy;
+    // this.transform.a = (Math.atan2(dy, dx) * 180) / Math.PI;
+    // box[parentId].style.transform = `translate(${this.transform.x}px, ${this.transform.y}px) rotate(${this.transform.a}deg)`;
+
+    const layer = event.target.closest('.layer');
+    if (!layer) return;
+
+    const cx = event.target['cx'];
+    const cy = event.target['cy'];
+    const dx = event.clientX - cx;
+    const dy = event.clientY - cy;
+    const angle = (Math.atan2(dy, dx) * 180) / Math.PI;
+
+    this.transform.a = angle;
+    layer.style.transform = `translate(${this.transform.x}px, ${this.transform.y}px) rotate(${angle}deg)`;
+  
+  }
+
+  onResizeElement(event: any) {
+    // let x: number = 0;
+    // let y: number = 0;
+
+    // const box: any = document.querySelectorAll('.layer');
+    // let target = event.target;
+    
+    // const transformString = box[target.id].style.transform;
+    // const rotationMatch = transformString.match(/rotate\((-?\d+\.?\d*)deg\)/);
+    // const newAngle = parseFloat(rotationMatch[1]);
+
+    // x = (parseFloat(target.getAttribute('data-x')) || 0) + event.deltaRect.left;
+    // y = (parseFloat(target.getAttribute('data-y')) || 0) + event.deltaRect.top;    
+
+    // Object.assign(target.style, {
+    //   width: `${event.rect.width}px`,
+    //   height: `${event.rect.height}px`,
+    //   transform: `translate(${x}px, ${y}px) rotate(${newAngle}deg)`,
+    // });
+
+    // target.setAttribute('data-x', x);
+    // target.setAttribute('data-y', y);
+
+    const target = event.target;
+    const transform = this.getCurrentTransform(target);
+
+    const x = (parseFloat(target.getAttribute('data-x')) || 0) + event.deltaRect.left;
+    const y = (parseFloat(target.getAttribute('data-y')) || 0) + event.deltaRect.top;
+
+    target.style.width = `${event.rect.width}px`;
+    target.style.height = `${event.rect.height}px`;
+    target.style.transform = `translate(${x}px, ${y}px) rotate(${transform.a}deg)`;
+
+    target.setAttribute('data-x', x.toString());
+    target.setAttribute('data-y', y.toString());
+  }
+
+
+  getCurrentTransform(target: any) {
+    const transformString = target.style.transform;
+    const match = transformString.match(/rotate\((-?\d+\.?\d*)deg\)/);
+    return {
+      x: parseFloat(target.getAttribute('data-x')) || 0,
+      y: parseFloat(target.getAttribute('data-y')) || 0,
+      a: match ? parseFloat(match[1]) : 0
+    };
   }
 
   openImageUpload() {
@@ -151,13 +259,8 @@ export class LayoutEditorV2Component {
     fileInput.click();
   }
 
-
-  addLayer(url: string = '', type: 'image' | 'video' = 'image') {
-    const newLayer = {
-      url: url,
-      type: type,
-      position: { x: 50, y: 50 } // Default position
-    };
+  addLayer(url: string = '',  type: 'image' | 'video' = 'image', x: number = 50, y: number = 50) {
+    const newLayer = { url: url, type: type, position: { x, y, a: 0 } };
     this.layers.push(newLayer);
   }
 
@@ -165,65 +268,15 @@ export class LayoutEditorV2Component {
     this.layers = this.layers.filter((l: any) => l !== layer);
   }
 
+  onDropAsset(data: any) {
+    const { item, event } = data;
+    const x = event.offsetX;
+    const y = event.offsetY;    
+    this.addLayer(item.data, 'image', x, y);
+  }
+
   exportCanvas() {
-    const canvas: any = document.querySelector('.canvas');
-    html2canvas(canvas).then((canvas) => {
-      
-      // Create an SVG element
-      const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-      svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
-      svg.setAttribute('width', canvas.width.toString());
-      svg.setAttribute('height', canvas.height.toString());
-
-      // Convert the canvas to a base64 image and embed in SVG
-      const img = canvas.toDataURL('image/png');
-      const image = document.createElementNS('http://www.w3.org/2000/svg', 'image');
-      image.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', img);
-      image.setAttribute('width', canvas.width.toString());
-      image.setAttribute('height', canvas.height.toString());
-
-      svg.appendChild(image);
-
-      // Serialize the SVG and download
-      const serializer = new XMLSerializer();
-      const svgString = serializer.serializeToString(svg);
-      const blob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
-      const url = URL.createObjectURL(blob);
-
-      // Create a download link
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'export.svg';
-      a.click();
-
-      // Cleanup
-      URL.revokeObjectURL(url);
-    });
+    console.log('Export layout');
     
-    // const node = document.getElementById('exportDiv');
-    // if (node) {
-    //   const videoElement = document.querySelector('video');
-    //   if (videoElement) {
-    //     const canvas = document.createElement('canvas');
-    //     const context = canvas.getContext('2d');
-    //     canvas.width = videoElement.videoWidth;
-    //     canvas.height = videoElement.videoHeight;
-    //     context?.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
-  
-    //     const dataUrl = canvas.toDataURL('image/png');
-    //     // Replace video with the captured image
-    //     const imgElement = document.createElement('img');
-    //     imgElement.src = dataUrl;
-    //     videoElement.parentNode?.replaceChild(imgElement, videoElement);
-    //   }
-  
-    //   htmlToImage.toSvg(node)
-    //     .then((dataUrl) => {
-    //       const link = document.createElement('a');
-    //       link.download = 'exported-image-with-video-frame.svg';
-    //       link.href = dataUrl;
-    //       link.click();
-    //     });
-    //   }
   }
 }

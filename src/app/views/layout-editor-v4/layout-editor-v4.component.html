@@ -1,0 +1,90 @@
+<!-- <div class="root">
+    <div class="container">
+        <div
+            class="target"
+            #targetRef
+            style="transform: translate(0px, 0px) rotate(0deg) scale(1, 1);"
+        >Target</div>
+        <ngx-moveable
+            [target]="targetRef"
+            [draggable]="draggable"
+            [throttleDrag]="throttleDrag"
+            [edgeDraggable]="edgeDraggable"
+            [startDragRotate]="startDragRotate"
+            [throttleDragRotate]="throttleDragRotate"
+            [scalable]="true"
+            [keepRatio]="keepRatio"
+            [throttleScale]="throttleScale"
+            [renderDirections]="renderDirections"
+            [rotatable]="rotatable"
+            [throttleRotate]="throttleRotate"
+            [rotationPosition]="rotationPosition"
+            [originDraggable]="originDraggable"
+            [originRelative]="originRelative"
+            [bounds]="bounds"
+            (dragOrigin)="onDragOrigin($event)"
+            (render)="onRender($event)"
+        ></ngx-moveable>
+    </div>
+</div> -->
+
+<!-- <div class="root">
+    <div
+        class="container"
+        style="width: 500px;height: 500px;border: 1px solid #ccc;"
+    >
+        <div
+            class="target"
+            style="width: 280px;height: 230px;"
+        >Target</div>
+        <ngx-moveable
+            #moveableRef
+            [target]="'.target'"
+            [draggable]="draggable"
+            [throttleDrag]="throttleDrag"
+            [edgeDraggable]="edgeDraggable"
+            [startDragRotate]="startDragRotate"
+            [throttleDragRotate]="throttleDragRotate"
+            [rotatable]="rotatable"
+            [snappable]="snappable"
+            [bounds]="bounds"
+            [edge]="edge"
+            (drag)="onDrag($event)"
+            (rotate)="onRotate($event)"
+            (bound)="onBound($event)"
+        ></ngx-moveable>
+    </div>
+</div> -->
+
+<div class="root h-100">
+    <button (click)="onClickAdd()">Add Layer</button>
+    <input type="file" (change)="onClickUpload($event)" />
+    <button (click)="onClickExport()">Export</button>
+    <div #dragContainer class="container h-100">
+        @for (layer of layers; track $index) {
+            <div [id]="$index" class="target" [ngClass]="'target' + $index + 1" [ngStyle]="{ 'top.px': layer.top, 'left.px': layer.left}">{{ layer.name }}</div>
+        }
+        <ngx-moveable
+            #moveableRef
+            [target]="targets"
+            [draggable]="draggable"
+            [scalable]="true"
+            [resizable]="true"
+            [rotatable]="true"
+            (render)="onRender($event)"
+            (renderGroup)="onRenderGroup($event)"
+            (resize)="onResize($event)"
+        ></ngx-moveable>
+        <ngx-selecto
+            [dragContainer]="dragContainer"
+            [selectableTargets]="['.target']"
+            [hitRate]="0"
+            [selectByClick]="true"
+            [selectFromInside]="true"
+            [toggleContinueSelect]="['shift']"
+            [ratio]="0"
+            (dragStart)="onDragStart($event)"
+            (selectEnd)="onSelectEnd($event)"
+        ></ngx-selecto>
+    </div>
+</div>
